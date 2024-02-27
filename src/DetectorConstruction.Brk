@@ -1,0 +1,388 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+/// \file B1DetectorConstruction.cc
+/// \brief Implementation of the B1DetectorConstruction class
+
+#include "B1DetectorConstruction.hh"
+#include "B1CalorimeterSD.hh"
+
+#include "G4SDParticleFilter.hh"
+
+#include "G4RunManager.hh"
+#include "G4NistManager.hh"
+#include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4Cons.hh"
+#include "G4Orb.hh"
+#include "G4Sphere.hh"
+#include "G4Trd.hh"
+#include "G4LogicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4VisAttributes.hh"
+#include "G4SubtractionSolid.hh"
+
+#include "G4MaterialTable.hh"
+#include "G4Material.hh"
+#include "G4SDManager.hh"
+
+#include "G4OpticalSurface.hh"
+#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
+
+#include "G4VPhysicalVolume.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1DetectorConstruction::B1DetectorConstruction(RootManager * rootMng)
+: G4VUserDetectorConstruction(),
+  fScoringVolume(0)
+{ fRootMng = rootMng; }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1DetectorConstruction::~B1DetectorConstruction()
+{ }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* B1DetectorConstruction::Construct()
+{  
+    // Get nist material manager
+    G4NistManager* nist = G4NistManager::Instance();
+    DefineMaterials();
+
+    // Envelope parameters
+    //
+    G4double env_sizeX = 5.1*cm, env_sizeY=101*cm, env_sizeZ = 2.1*cm;
+    G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR");
+    G4double ESR_sizeX = 5.2*cm, ESR_sizeY=101.1*cm, ESR_sizeZ = 2.2*cm;
+    G4Material* ESR_mat = nist->FindOrBuildMaterial("G4_C");
+
+    // Option to switch on/off checking of volumes overlaps
+    //
+    G4bool checkOverlaps = true;
+
+    //     
+    // World
+    //
+    G4double world_sizeX = 20*cm;
+    G4double world_sizeY = 150*cm;
+    G4double world_sizeZ = 10*cm;
+    G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
+
+    G4Box* solidWorld =    
+        new G4Box("World",                       //its name
+                0.5*world_sizeX, 0.5*world_sizeY, 0.5*world_sizeZ);     //its size
+
+    G4LogicalVolume* logicWorld =                         
+        new G4LogicalVolume(solidWorld,          //its solid
+                world_mat,           //its material
+                "World");            //its name
+
+    G4VPhysicalVolume* physWorld = 
+        new G4PVPlacement(0,                     //no rotation
+                G4ThreeVector(),       //at (0,0,0)
+                logicWorld,            //its logical volume
+                "World",               //its name
+                0,                     //its mother  volume
+                false,                 //no boolean operation
+                0,                     //copy number
+                checkOverlaps);        //overlaps checking
+
+    //     
+    // Envelope
+    //  
+    G4Box* solidESR = 
+        new G4Box("ESRfilm",                   //its name
+                0.5*ESR_sizeX, 0.5*ESR_sizeY, 0.5*ESR_sizeZ); //its size
+    G4Box* solidEnv =    
+        new G4Box("Envelope",                    //its name
+                0.5*env_sizeX, 0.5*env_sizeY, 0.5*env_sizeZ); //its size
+
+    G4SubtractionSolid* ESR_subtraction = 
+        new G4SubtractionSolid("ESRBox", solidESR, solidEnv);
+
+    G4LogicalVolume * logicESR = 
+        new G4LogicalVolume(ESR_subtraction,   //its solid
+                ESR_mat,           //its material
+                "ESRBox");         //its name
+
+    new G4PVPlacement(0,                       //no rotation
+            G4ThreeVector(),         //at (0,0,0)
+            logicESR,                //its logical volume;
+            "ESRfilm",               //its name
+            logicWorld,              //its mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //overlaps checking
+
+    G4Colour ESR_colour(1.,1.,0.);
+    logicESR->SetVisAttributes(G4VisAttributes(ESR_colour));
+
+    G4LogicalVolume* logicEnv =                         
+        new G4LogicalVolume(solidEnv,            //its solid
+                env_mat,             //its material
+                "Envelope");         //its name
+
+    new G4PVPlacement(0,                       //no rotation
+            G4ThreeVector(),         //at (0,0,0)
+            logicEnv,                //its logical volume
+            "Envelope",              //its name
+            logicESR,              //its mother  volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //overlaps checking
+
+    // Scintillation Box
+    G4Material *scintillatorMat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+
+    G4double photonEnergy[] = {0.1 * eV, 2.21 * eV, 2.58 * eV, 2.82 * eV, 2.95 * eV, 3.10 * eV, 4.00 * eV};
+
+    const G4int nEntries = sizeof(photonEnergy) / sizeof(G4double);
+
+    G4double RefractionIdx[nEntries] = {1.85, 1.833, 1.821, 1.813, 1.809, 1.804, 1.79};
+    G4double AbsorptionLength[nEntries] = {40. * cm, 40. * cm, 40. * cm, 40. * cm, 40. * cm, 40. * cm, 40. * cm};
+
+    auto *MPT = new G4MaterialPropertiesTable();
+    MPT->AddProperty("RINDEX", photonEnergy, RefractionIdx, nEntries); //used by Cerekov, bondary, rayleigh
+    MPT->AddProperty("ABSLENGTH", photonEnergy, AbsorptionLength, nEntries); //used by absorption
+
+    G4double ScintEnergy[nEntries] = {0.1 * eV, 2.21 * eV, 2.58 * eV, 2.82 * eV, 2.95 * eV, 3.10 * eV, 4.00 * eV};
+    G4double ScintFast[nEntries] = {0.0, 0.23, 0.85, 1.93, 2.15, 1.08, 0.0};
+
+    MPT->AddProperty("FASTCOMPONENT", ScintEnergy, ScintFast, nEntries); //used by scitilation energy sampling
+
+    MPT->AddConstProperty("SCINTILLATIONYIELD", 25. / MeV); //used by scitination, slow+fast
+    MPT->AddConstProperty("RESOLUTIONSCALE", 1.0); //used by num sampling sigma=scale*sqrt(MEAN)
+    MPT->AddConstProperty("FASTTIMECONSTANT", 40. * ns); //used by fast scint.
+    MPT->AddConstProperty("YIELDRATIO", 1.); //material yield ratio, used only for fast; can be overwrited by user using fExcitationRatio
+
+    scintillatorMat->SetMaterialPropertiesTable(MPT);
+    G4Material* Scint_mat = scintillatorMat;   //Scintillation box
+
+    //wavelength-shifting fiber material defination
+    G4Material *FiberMat = nist->FindOrBuildMaterial("G4_POLYSTYRENE");
+    G4double EmissionFiber[nEntries] = {0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 10.0};
+
+    auto *MPTFiber = new G4MaterialPropertiesTable();
+    MPTFiber->AddProperty("RINDEX",photonEnergy, RefractionIdx, nEntries);
+    MPTFiber->AddProperty("WLSABSLENGTH",photonEnergy, AbsorptionLength, nEntries);
+    MPTFiber->AddProperty("WLSCOMPONENT",photonEnergy, EmissionFiber, nEntries);
+    MPTFiber->AddConstProperty("WLSTIMECONSTANT", 0.5 * ns);
+    FiberMat->SetMaterialPropertiesTable(MPTFiber);
+    G4Material* core_mat = FiberMat;
+
+    G4ThreeVector pos1 = G4ThreeVector(0, 0, 0);
+
+    // Conical section shape       
+    G4double Scint_X = 5*cm, Scint_Y = 100*cm, Scint_Z = 2*cm;
+    G4Box* solidShape1 =    
+        new G4Box("Scintillator", 
+                0.5*Scint_X, 0.5*Scint_Y, 0.5*Scint_Z);
+
+    G4double core_X = 1.2*mm, core_Y = 100*cm, core_Z = 1.2*mm; 
+    G4Box* solidShape2 = 
+        new G4Box("Groove",
+                0.5*core_X, 0.5*core_Y, 0.5*core_Z); 
+
+    //G4ThreeVector pos2 = G4ThreeVector((0.5*Scint_X-1.0*core_X),0,0);     //left side of the scintillator
+    G4ThreeVector pos2 = G4ThreeVector(0,0,0);     //center of the scintillator
+    G4ThreeVector pos21= G4ThreeVector((0.5*Scint_X-1.0*core_X), 0, 0);     //center of the scintillator
+    G4ThreeVector pos22= G4ThreeVector((1.0*core_X-0.5*Scint_X), 0, 0);
+
+    G4SubtractionSolid* subtraction1 = 
+        new G4SubtractionSolid("ScintWithGroove1", solidShape1, solidShape2, 0, pos21);
+
+    G4SubtractionSolid* subtraction = 
+        new G4SubtractionSolid("ScintWithGroove", subtraction1, solidShape2, 0, pos22); 
+
+    G4LogicalVolume* logicShape =                         
+        new G4LogicalVolume(subtraction,         //its solid
+                Scint_mat,          //its material
+                "ScintWithGroove");           //its name
+
+    G4VPhysicalVolume* scint_PV = new G4PVPlacement(0,                       //no rotation
+            pos1,                    //at position
+            logicShape,             //its logical volume
+            "Scintillator",                //its name
+            logicWorld,                //its mother  volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //overlaps checking
+
+    //Wavelength Shifter Box
+
+    G4Box* solidShape31 =
+        new G4Box("Fiber1", 
+                0.5*core_X, 0.5*core_Y, 0.5*core_Z);
+
+    G4Box* solidShape32 =
+        new G4Box("Fiber2", 
+                0.5*core_X, 0.5*core_Y, 0.5*core_Z);
+
+    G4LogicalVolume* logicShape31 = 
+        new G4LogicalVolume(solidShape31,          //its solid
+                core_mat,             //its material
+                "Fiber1");             //its name
+
+    G4LogicalVolume* logicShape32 = 
+        new G4LogicalVolume(solidShape32,          //its solid
+                core_mat,             //its material
+                "Fiber2");             //its name
+
+    G4VPhysicalVolume* fiber_PV1 = new G4PVPlacement(0,                        //no rotation
+            pos21,                     //at position
+            logicShape31,              //its logical volume
+            "Fiber1",                  //its name
+            logicWorld,                 //its mother volume
+            false,                    //no boolean operation
+            0,                        //copy number
+            checkOverlaps);           //overlaps checking
+
+    G4VPhysicalVolume* fiber_PV2 = new G4PVPlacement(0,                        //no rotation
+            pos22,                     //at position
+            logicShape32,              //its logical volume
+            "Fiber2",                  //its name
+            logicWorld,                 //its mother volume
+            false,                    //no boolean operation
+            0,                        //copy number
+            checkOverlaps);           //overlaps checking
+
+    G4Colour core_colour(0.,0.,1.);            //Blue
+    logicShape31->SetVisAttributes(G4VisAttributes(core_colour));
+    logicShape32->SetVisAttributes(G4VisAttributes(core_colour));
+
+    //surface around WLS reflection
+    const G4int cNum = 2;
+    G4double ephoton[cNum] = {1 * eV, 7 * eV};//overflow and underflow will take first/last bin
+    G4double reflectivity[cNum] = {1.0, 1.0};
+    G4double efficiency[cNum] = {0.0, 0.0};
+    G4double transmittance[cNum] = {0.0, 0.0};
+    auto Wrap_Surface_Mat = new G4MaterialPropertiesTable();
+    Wrap_Surface_Mat->AddProperty("REFLECTIVITY", ephoton, reflectivity, cNum); //reflect fraction, default=1
+    Wrap_Surface_Mat->AddProperty("EFFICIENCY", ephoton, efficiency,
+                                  cNum); //detection  fraction (abs=1-reflet-trans, then at efficiency, detectition(invoke post-step SD)),default=0
+    Wrap_Surface_Mat->AddProperty("TRANSMITTANCE", ephoton, transmittance, cNum); //transmission fraction, default=0
+
+    auto Wrap_Surface = new G4OpticalSurface("WrapSurfaceOptical");
+    Wrap_Surface->SetType(dielectric_LUT);
+    Wrap_Surface->SetModel(LUT);
+    Wrap_Surface->SetFinish(polishedtyvekair);
+    Wrap_Surface->SetMaterialPropertiesTable(Wrap_Surface_Mat);
+
+    G4LogicalBorderSurface* WLSSurface1 = new G4LogicalBorderSurface("WLS_surface",fiber_PV1,scint_PV,Wrap_Surface);
+    G4LogicalBorderSurface* WLSSurface2 = new G4LogicalBorderSurface("WLS_surface",fiber_PV2,scint_PV,Wrap_Surface);
+
+    //  Sensitive Detector
+
+    G4double SD_X = core_X, SD_Y = 2*mm, SD_Z = core_Z;
+    G4Material* SD_mat = nist->FindOrBuildMaterial("G4_Si");
+//     SD_mat->SetMaterialPropertiesTable(MPTFiber);
+    G4Box* solidShape41 = 
+        new G4Box("SensitiveDetector1",
+                0.5*SD_X, 0.5*SD_Y, 0.5*SD_Z);
+
+    G4Box* solidShape42 = 
+        new G4Box("SensitiveDetector2",
+                0.5*SD_X, 0.5*SD_Y, 0.5*SD_Z);
+
+    G4LogicalVolume* logicShape41 = 
+        new G4LogicalVolume(solidShape41,       //its solid
+                SD_mat,                       //its material
+                "SensitiveDetector1");         //its name
+
+    G4LogicalVolume* logicShape42 = 
+        new G4LogicalVolume(solidShape42,       //its solid
+                SD_mat,                       //its material
+                "SensitiveDetector2");         //its name
+
+    //G4ThreeVector pos3 = G4ThreeVector((0.5*Scint_X-1.0*core_X), (0.5*Scint_Y + 0.5*SD_Y ), 0);   //corresponding to the left side fiber
+    G4ThreeVector pos31 = G4ThreeVector((0.5*Scint_X-1.0*core_X), (0.5*Scint_Y + 0.5*SD_Y ), 0);
+    G4ThreeVector pos32 = G4ThreeVector((1.0*core_X-0.5*Scint_X), (0.5*Scint_Y + 0.5*SD_Y ), 0);
+    auto sipm_PV1 = new G4PVPlacement(0,
+            pos31,
+            logicShape41,
+            "SensitiveDetector1",
+            logicWorld,
+            false,
+            0,
+            checkOverlaps);
+
+    auto sipm_PV2 = new G4PVPlacement(0,
+            pos32,
+            logicShape42,
+            "SensitiveDetector2",
+            logicWorld,
+            false,
+            0,
+            checkOverlaps);
+
+    G4Colour SD_colour(1.,4.,2);
+    logicShape41->SetVisAttributes(G4VisAttributes(SD_colour));
+    logicShape42->SetVisAttributes(G4VisAttributes(SD_colour));
+
+    auto sipmSD = new B1CalorimeterSD("/SiliconPMSD",fRootMng);
+    G4SDManager::GetSDMpointer()->AddNewDetector(sipmSD);
+    logicShape41->SetSensitiveDetector(sipmSD);
+    logicShape42->SetSensitiveDetector(sipmSD);
+
+    //sipm surface
+    // APD related
+    G4double reflectivityAPD[cNum] = {0.0, 0.0};
+    G4double efficiencyAPD[cNum] = {1.0, 1.0};
+    G4double transmittanceAPD[cNum] = {0.0, 0.0};
+    auto APD_Surface_Mat = new G4MaterialPropertiesTable();
+    APD_Surface_Mat->AddProperty("REFLECTIVITY", ephoton, reflectivityAPD, cNum); //reflect fraction, default=1
+    APD_Surface_Mat->AddProperty("EFFICIENCY", ephoton, efficiencyAPD,
+                                 cNum); //detection  fraction (abs=1-reflet-trans, then at efficiency, detectition(invoke post-step SD)),default=0
+    APD_Surface_Mat->AddProperty("TRANSMITTANCE", ephoton, transmittanceAPD, cNum); //transmission fraction, default=0
+
+    auto APD_Surface = new G4OpticalSurface("APDSurfaceOptical");
+    APD_Surface->SetType(dielectric_LUT);
+    APD_Surface->SetModel(LUT);
+    APD_Surface->SetFinish(polishedvm2000glue);
+    APD_Surface->SetMaterialPropertiesTable(APD_Surface_Mat);
+
+    //     G4LogicalBorderSurface* SIPMSurface = new G4LogicalBorderSurface("SIPM_surface",sipm_PV,fiber_PV,APD_Surface);
+    auto *SIPMSurface1 = new G4LogicalSkinSurface("SIPM_surface",logicShape41,APD_Surface);
+    auto *SIPMSurface2 = new G4LogicalSkinSurface("SIPM_surface",logicShape42,APD_Surface);
+
+    //
+    //always return the physical World
+    //
+    return physWorld;
+}
+
+void B1DetectorConstruction::DefineMaterials()
+{
+    /* Define Optical Properties */
+    /*
+     */
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

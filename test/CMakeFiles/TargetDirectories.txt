@@ -1,0 +1,8 @@
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/install/strip.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/install/local.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/B1.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/exampleB1.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/edit_cache.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/rebuild_cache.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/install.dir
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/test/CMakeFiles/list_install_components.dir

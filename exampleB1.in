@@ -1,0 +1,11 @@
+# Macro file for example B1 test
+
+/run/initialize
+
+# proton 210 MeV 
+/gps/particle  proton
+/gps/ene/mono  1 GeV
+/gps/direction 0. 0. 1.
+/gps/position  0. 0. -100 cm
+#
+/run/beamOn 1000

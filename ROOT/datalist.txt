@@ -1,0 +1,10 @@
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_1MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_2MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_3MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_5MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_10MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_100MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_200MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_300MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_500MeV.root
+/lustre/collider/liudanning/DarkPhoton/StandAlone/Test/ROOT/photon_1000MeV.root
