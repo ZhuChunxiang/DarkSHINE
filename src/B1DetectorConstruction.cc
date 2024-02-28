@@ -135,9 +135,9 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
 
     G4double SD_X = 3. * mm, SD_Y = 1. * mm, SD_Z = 3. * mm; // SiPM geometry parameter
 
-    G4double Cell_X = ESR_X, Cell_Y = ESR_Y, Cell_Z = ESR_Z; // Cell geometry parameter
+    G4double Cell_X = ESR_X + 2 * Air_Gap, Cell_Y = ESR_Y, Cell_Z = ESR_Z; // Cell geometry parameter
 
-    G4double Layer_X = nCell * ESR_X, Layer_Y = nCell * ESR_X, Layer_Z = ESR_Z; // Layer geometry parameter
+    G4double Layer_X = nCell * Cell_X, Layer_Y = nCell * Cell_X, Layer_Z = Cell_Z; // Layer geometry parameter
     G4double Layer_Gap = 0.1 * mm;
 
     G4double Absorber_X = Layer_X, Absorber_Y = Layer_Y, Absorber_Z = 1 * cm; // Absorber geometry parameter
