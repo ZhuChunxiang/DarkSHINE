@@ -84,9 +84,16 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     // Option to switch on/off checking of volumes overlaps
     G4bool checkOverlaps = true;
     
+    // Element
+    G4double density, a, z; // atmoic mass ,atomic number
+    auto* fH = new G4Element("H", "H", z = 1., a = 1.01 * g / mole);
+    auto* fC = new G4Element("C", "C", z = 6., a = 12.01 * g / mole);
+    auto* fN = new G4Element("N", "N", z = 7., a = 14.01 * g / mole);
+    auto* fO = new G4Element("O", "O", z = 8., a = 16.00 * g / mole);
+
     // World
-    G4double world_sizeX = 200 * cm;
-    G4double world_sizeY = 200 * cm;
+    G4double world_sizeX = 400 * cm;
+    G4double world_sizeY = 400 * cm;
     G4double world_sizeZ = 400 * cm;
     G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
@@ -110,22 +117,30 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                           checkOverlaps);  // overlaps checking
 
     // Geometry Parameter
+    G4int nLayer = 5, nCell = 15; // The number of the layers and the number of cells in each layer
+    G4double Air_Gap = 0.02 * mm; // Air gap geometry parameter
+
     G4double Scint_X = 5 * cm, Scint_Y = 75 * cm, Scint_Z = 1 * cm; // Scintillator geometry parameter
 
     G4double groove_R = 0.5 * mm, groove_Y = Scint_Y; // Fiber geometry parameter
     G4double fiber_extrude = 0. * mm; // this is to simulate the fiber is lightly longer than the scintalor, thus extrude a little bit.
+    G4double ESR_groove_R = groove_R + 2 * Air_Gap;
+    G4double Scint_groove_R = groove_R + Air_Gap;
 
     G4double clad_R = groove_R, clad_Y = (Scint_Y + fiber_extrude * 2) / 2; // Fiber clad geometry parameter
     G4double core_R = clad_R * 0.98, core_Y = clad_Y;
     
     G4double ESR_thickness = 0.08 * mm; // ESR geometry parameter
-    G4double ESR_X = Scint_X + 2 * ESR_thickness, ESR_Y = Scint_Y + 2 * ESR_thickness, ESR_Z = Scint_Z + 2 * ESR_thickness;
+    G4double ESR_X = Scint_X + 2 * ESR_thickness + 2 * Air_Gap, ESR_Y = Scint_Y + 2 * ESR_thickness + 2 * Air_Gap, ESR_Z = Scint_Z + 2 * ESR_thickness + 2 * Air_Gap;
 
     G4double SD_X = 3. * mm, SD_Y = 1. * mm, SD_Z = 3. * mm; // SiPM geometry parameter
 
     G4double Cell_X = ESR_X, Cell_Y = ESR_Y, Cell_Z = ESR_Z; // Cell geometry parameter
 
-    G4double Absorber_X = Cell_Y, Absorber_Y = Cell_Y, Absorber_Z = 1 * cm; // Absorber geometry parameter
+    G4double Layer_X = nCell * ESR_X, Layer_Y = nCell * ESR_X, Layer_Z = ESR_Z; // Layer geometry parameter
+    G4double Layer_Gap = 0.1 * mm;
+
+    G4double Absorber_X = Layer_X, Absorber_Y = Layer_Y, Absorber_Z = 1 * cm; // Absorber geometry parameter
 
     auto* alongY = new G4RotationMatrix();
     alongY->rotateX(-90 * deg);
@@ -133,23 +148,27 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     auto* alongX = new G4RotationMatrix();
     alongX->rotateZ(-90 * deg);
 
-    // Element
-    auto* fPMMA = new G4Material("PMMA", density = 1190 * kg / m3, 3);
-    auto* fH = new G4Element("H", "H", z = 1., a = 1.01 * g / mole);
-    auto* fC = new G4Element("C", "C", z = 6., a = 12.01 * g / mole);
-    auto* fN = new G4Element("N", "N", z = 7., a = 14.01 * g / mole);
-    auto* fO = new G4Element("O", "O", z = 8., a = 16.00 * g / mole);
+    // Layer
+    G4Material* Layer_mat = nist->FindOrBuildMaterial("G4_AIR"); // air
+    G4Box* solidLayer =
+        new G4Box("Layer",  // its name
+                  0.5 * Layer_X, 0.5 * Layer_Y, 0.5 * Layer_Z); // its size
+
+    G4LogicalVolume* logicLayer =
+        new G4LogicalVolume(solidLayer, // its solid
+                            Layer_mat,  // its material
+                            "Cell");   // its name
 
     // Cell
     G4Material* Cell_mat = nist->FindOrBuildMaterial("G4_AIR"); // air
     G4Box* solidCell =
         new G4Box("Cell",  // its name
-            0.5 * Cell_X, 0.5 * Cell_Y, 0.5 * Cell_Z); // its size
+                  0.5 * Cell_X, 0.5 * Cell_Y, 0.5 * Cell_Z); // its size
 
     G4LogicalVolume* logicCell =
         new G4LogicalVolume(solidCell, // its solid
-            Cell_mat,  // its material
-            "Cell");   // its name
+                            Cell_mat,  // its material
+                            "Cell");   // its name
 
     // Absorber
     G4Material* Absorber_mat = nist->FindOrBuildMaterial("G4_Fe");
@@ -162,10 +181,10 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                             "Absorber");   // its name
 
     // ESR surface
-    ESR_mat = new G4Material("ESR", density = 1.38 * g / cm3, ncomponents = 3);
-    ESR_mat->AddElement(C, 10);
-    ESR_mat->AddElement(H, 8);
-    ESR_mat->AddElement(O, 4);
+    auto* ESR_mat = new G4Material("ESR", density = 1.38 * g / cm3, 3);
+    ESR_mat->AddElement(fC, 10);
+    ESR_mat->AddElement(fH, 8);
+    ESR_mat->AddElement(fO, 4);
 
     G4Box* solidESR_out =
         new G4Box("ESR", 0.5 * ESR_X, 0.5 * ESR_Y, 0.5 * ESR_Z);
@@ -177,18 +196,17 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
         new G4SubtractionSolid("ESR_Without_Groove", solidESR_out, solidESR_inner, alongY, G4ThreeVector(0, 0, 0));
 
     G4double ESR_groove_Y = ESR_Y;
-
     G4Tubs* solidESR_Groove =
-        new G4Tubs("Groove", 0 * mm, groove_R, ESR_groove_Y, 0 * deg, 360 * deg);
+        new G4Tubs("Groove", 0 * mm, ESR_groove_R, ESR_groove_Y, 0 * deg, 360 * deg);
 
     G4SubtractionSolid* solidESR_sub_Groove1 =
-        new G4SubtractionSolid("ESRWithGroove", solidESR, solidESR_Groove, alongY, G4ThreeVector(0, 0, (Scint_Z / 2 - groove_R)));
+        new G4SubtractionSolid("ESRWithGroove", solidESR, solidESR_Groove, alongY, G4ThreeVector(0, 0, (Scint_Z / 2 - Scint_groove_R)));
 
     G4SubtractionSolid* solidESR_sub_Groove2 =
-        new G4SubtractionSolid("ESRWithGroove", solidESR_sub_Groove1, solidESR_Groove, alongY, G4ThreeVector((Scint_X / 3), 0, ((Scint_Z / 2 - groove_R) * (-1))));
+        new G4SubtractionSolid("ESRWithGroove", solidESR_sub_Groove1, solidESR_Groove, alongY, G4ThreeVector((Scint_X / 3), 0, ((Scint_Z / 2 - Scint_groove_R) * (-1))));
 
     G4SubtractionSolid* solidESR_sub_Groove =
-        new G4SubtractionSolid("ESRWithGroove", solidESR_sub_Groove2, solidESR_Groove, alongY, G4ThreeVector((Scint_X / (-3)), 0, ((Scint_Z / 2 - groove_R) * (-1))));
+        new G4SubtractionSolid("ESRWithGroove", solidESR_sub_Groove2, solidESR_Groove, alongY, G4ThreeVector((Scint_X / (-3)), 0, ((Scint_Z / 2 - Scint_groove_R) * (-1))));
 
     G4LogicalVolume* logicESR =
         new G4LogicalVolume(solidESR_sub_Groove, // its solid
@@ -197,9 +215,9 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
 
     new G4PVPlacement(0,               // no rotation
                       G4ThreeVector(), // no translation
-                      logicESR,      // its logical volume;
-                      "ESR",         // its name
-                      logicCell,        // its mother volume
+                      logicESR,        // its logical volume;
+                      "ESR",           // its name
+                      logicCell,       // its mother volume
                       false,           // no boolean operation
                       0,               // copy number
                       checkOverlaps);  // overlaps checking
@@ -249,21 +267,21 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     // ############ material definition end
     
     G4Box *solidScintilator =
-        new G4Box("Scintillator_NoGroove",
+        new G4Box("Scintillator_No_Groove",
                   0.5 * Scint_X, 0.5 * Scint_Y, 0.5 * Scint_Z);
     
     //打孔
     G4Tubs *solidGroove =
-        new G4Tubs("Groove", 0 * mm, groove_R, groove_Y, 0 * deg, 360 * deg);
+        new G4Tubs("Groove", 0 * mm, Scint_groove_R, groove_Y, 0 * deg, 360 * deg);
 
     G4SubtractionSolid *solidScint_sub_Groove1 =
-        new G4SubtractionSolid("ScintWithGroove", solidScintilator, solidGroove, alongY, G4ThreeVector(0, 0, (Scint_Z/2-groove_R))); 
+        new G4SubtractionSolid("ScintWithGroove", solidScintilator, solidGroove, alongY, G4ThreeVector(0, 0, (Scint_Z / 2 - Scint_groove_R)));
 
     G4SubtractionSolid *solidScint_sub_Groove2 =
-        new G4SubtractionSolid("ScintWithGroove", solidScint_sub_Groove1, solidGroove, alongY, G4ThreeVector((Scint_X/3), 0, ((Scint_Z/2-groove_R)*(-1))));
+        new G4SubtractionSolid("ScintWithGroove", solidScint_sub_Groove1, solidGroove, alongY, G4ThreeVector((Scint_X/3), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))));
 
     G4SubtractionSolid *solidScint_sub_Groove =
-        new G4SubtractionSolid("ScintWithGroove", solidScint_sub_Groove2, solidGroove, alongY, G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z/2-groove_R)*(-1))));
+        new G4SubtractionSolid("ScintWithGroove", solidScint_sub_Groove2, solidGroove, alongY, G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))));
 
     G4LogicalVolume *logicScint =
         new G4LogicalVolume(solidScint_sub_Groove, // its solid
@@ -274,7 +292,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                       G4ThreeVector(), // no translation
                       logicScint,      // its logical volume;
                       "Scint",         // its name
-                      logicCell,        // its mother volume
+                      logicCell,       // its mother volume
                       false,           // no boolean operation
                       0,               // copy number
                       checkOverlaps);  // overlaps checking
@@ -300,35 +318,35 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                             cladMat,    // its material
                             "Clad_LV"); // its name
     new G4PVPlacement(alongY,           // no rotation
-                      G4ThreeVector(0, 0, (Scint_Z/2-groove_R)),  // no translation
+                      G4ThreeVector(0, 0, (Scint_Z / 2 - Scint_groove_R)),  // no translation
                       logicClad,        // its logical volume;
                       "Clad",           // its name
-                      logicCell,         // its mother volume
+                      logicCell,        // its mother volume
                       false,            // no boolean operation
                       0,                // copy number
                       checkOverlaps);   // overlaps checking
 
     new G4PVPlacement(alongY,           // no rotation
-                      G4ThreeVector((Scint_X/3), 0, ((Scint_Z/2-groove_R)*(-1))),  // no translation
+                      G4ThreeVector((Scint_X/3), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))),  // no translation
                       logicClad,        // its logical volume;
                       "Clad",           // its name
-                      logicCell,         // its mother volume
+                      logicCell,        // its mother volume
                       false,            // no boolean operation
                       1,                // copy number
                       checkOverlaps);   // overlaps checking
 
     new G4PVPlacement(alongY,           // no rotation
-                      G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z/2-groove_R)*(-1))),  // no translation
+                      G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))),  // no translation
                       logicClad,        // its logical volume;
                       "Clad",           // its name
-                      logicCell,         // its mother volume
+                      logicCell,        // its mother volume
                       false,            // no boolean operation
                       2,                // copy number
                       checkOverlaps);   // overlaps checking
 
     // wls fiber core
     // ############## material start, PMMA, n1.60
-    G4double density, a, z; // atmoic mass ,atomic number
+    auto* fPMMA = new G4Material("PMMA", density = 1190 * kg / m3, 3);
     G4int polyPMMA = 1;
     G4int nC_PMMA = 3 + 2 * polyPMMA;
     G4int nH_PMMA = 6 + 2 * polyPMMA;
@@ -363,7 +381,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                             "Fiber_LV");              // its name
     
     auto *wls_PV = new G4PVPlacement(alongY,          // no rotation
-                                     G4ThreeVector(0, 0, (Scint_Z/2-groove_R)), // no translation
+                                     G4ThreeVector(0, 0, (Scint_Z / 2 - Scint_groove_R)), // no translation
                                      logicFiber,      // its logical volume;
                                      "Fiber",         // its name
                                      logicCell,       // its mother volume
@@ -372,7 +390,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                                      checkOverlaps);  // overlaps checking
 
     auto *wls_PV1 = new G4PVPlacement(alongY,          // no rotation
-                                      G4ThreeVector((Scint_X/3), 0, ((Scint_Z/2-groove_R)*(-1))), // no translation
+                                      G4ThreeVector((Scint_X/3), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))), // no translation
                                       logicFiber,      // its logical volume;
                                       "Fiber",         // its name
                                       logicCell,       // its mother volume
@@ -382,7 +400,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
 
 
     auto *wls_PV2 = new G4PVPlacement(alongY,          // no rotation
-                                      G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z/2-groove_R)*(-1))), // no translation
+                                      G4ThreeVector((Scint_X/(-3)), 0, ((Scint_Z / 2 - Scint_groove_R)*(-1))), // no translation
                                       logicFiber,      // its logical volume;
                                       "Fiber",         // its name
                                       logicCell,       // its mother volume
@@ -403,7 +421,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                             "SIPM_LV"); // its name
                             
     auto *sipm_PV = new G4PVPlacement(0,
-                                      G4ThreeVector(0, 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, (Scint_Z/2-groove_R)), // ensure by yourself not exceed the logicBar
+                                      G4ThreeVector(0, 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, (Scint_Z / 2 - Scint_groove_R)), // ensure by yourself not exceed the logicBar
                                       logicSIPM,
                                       "SIPM",
                                       logicCell,
@@ -413,7 +431,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
 
 
     auto *sipm_PV1 = new G4PVPlacement(0,
-                                      G4ThreeVector((Scint_X/3), 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, ((Scint_Z/2-groove_R)*(-1))), // ensure by yourself not exceed the logicBar
+                                      G4ThreeVector((Scint_X/3), 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, ((Scint_Z / 2 - Scint_groove_R)*(-1))), // ensure by yourself not exceed the logicBar
                                       logicSIPM,
                                       "SIPM",
                                       logicCell,
@@ -422,7 +440,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                                       checkOverlaps); 
     
     auto *sipm_PV2 = new G4PVPlacement(0,
-                                      G4ThreeVector((Scint_X/(-3)), 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, ((Scint_Z/2-groove_R)*(-1))), // ensure by yourself not exceed the logicBar
+                                      G4ThreeVector((Scint_X/(-3)), 0.5 * Scint_Y + fiber_extrude + 0.5 * SD_Y, ((Scint_Z / 2 - Scint_groove_R)*(-1))), // ensure by yourself not exceed the logicBar
                                       logicSIPM,
                                       "SIPM",
                                       logicCell,
@@ -449,46 +467,52 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     new G4LogicalBorderSurface("SIPM_surface", wls_PV, sipm_PV, APD_Surface);
     new G4LogicalBorderSurface("SIPM_surface", wls_PV1, sipm_PV1, APD_Surface);
     new G4LogicalBorderSurface("SIPM_surface", wls_PV2, sipm_PV2, APD_Surface);
-
-    // Put cell
-    G4int nLayer = 10, nCell = 15;
     
-    // each layer of the prototype   
-    for (G4int i = 1; i < nLayer; i++)
+    // Put cell in layer
+    for (G4int j = 0; j < nCell; j++)
     {
         new G4PVPlacement(0, // no rotation
-                          G4ThreeVector(0, 0, i * (Absorber_Z + Cell_Z)),
-                          logicAbsorber,          // its logical volume;
+                          G4ThreeVector((j - 7) * Cell_X, 0, 0),
+                          logicCell,         // its logical volume;
+                          "scin_bar",        // its name
+                          logicLayer,        // its mother volume
+                          false,             // no boolean operation
+                          j,                 // copy number
+                          checkOverlaps);    // overlaps checking
+    }
+
+    // Put layer in the prototype
+    for (G4int i = 0; i < nLayer; i++)
+    {
+        // Put absorber
+        new G4PVPlacement(0, // no rotation
+                          G4ThreeVector(0, 0, i * (Absorber_Z + Layer_Z) + 2 * i * Layer_Gap),
+                          logicAbsorber,     // its logical volume;
                           "absorber",        // its name
                           logicWorld,        // its mother volume
                           false,             // no boolean operation
-                          i, // copy number
+                          i,                 // copy number
                           checkOverlaps);    // overlaps checking
-
+        
+        // Put layer (XY crossing)
         if ((i%2) == 0)
-            for (G4int j = 0; j < nCell; j++)
-            {
-                new G4PVPlacement(0, // no rotation
-                                  G4ThreeVector((j - 7) * Cell_X, 0, (i + 0.5) * (Absorber_Z + Cell_Z)),
-                                  logicCell,          // its logical volume;
-                                  "scin_bar",        // its name
-                                  logicWorld,        // its mother volume
-                                  false,             // no boolean operation
-                                  i * nCell + j, // copy number
-                                  checkOverlaps);    // overlaps checking
-            }
+            new G4PVPlacement(0,                 // no rotation
+                              G4ThreeVector(0, 0, (i + 0.5) * (Absorber_Z + Layer_Z) + (2*i + 1) * Layer_Gap),
+                              logicLayer,        // its logical volume;
+                              "layer_scint",     // its name
+                              logicWorld,        // its mother volume
+                              false,             // no boolean operation
+                              i,                 // copy number
+                              checkOverlaps);    // overlaps checking
         else
-            for (G4int j = 0; j < nCell; j++)
-            {
-                new G4PVPlacement(alongX, // no rotation
-                                  G4ThreeVector(0, (j - 7) * Cell_X, (i + 0.5) * (Absorber_Z + Cell_Z)),
-                                  logicCell,          // its logical volume;
-                                  "scin_bar",        // its name
-                                  logicWorld,        // its mother volume
-                                  false,             // no boolean operation
-                                  i * nCell + j, // copy number
-                                  checkOverlaps);    // overlaps checking
-            }
+            new G4PVPlacement(alongX,            // rotation
+                              G4ThreeVector(0, 0, (i + 0.5) * (Absorber_Z + Layer_Z) + (2*i + 1) * Layer_Gap),
+                              logicLayer,        // its logical volume;
+                              "layer_scint",     // its name
+                              logicWorld,        // its mother volume
+                              false,             // no boolean operation
+                              i,                 // copy number
+                              checkOverlaps);    // overlaps checking
     }
     
                       

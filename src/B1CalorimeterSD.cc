@@ -62,10 +62,12 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   // G4cout<< "name is "<< name << G4endl;
   if (name=="opticalphoton")
   {
-      //auto scintid = step->GetPreStepPoint()->parentTouchable->GetReplicaNumber();
-      auto sipmid =  step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber();
+      auto Layer_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
+      auto Cell_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
+      // auto Sipm_id =  step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber();
       // std:: cout << "sipm id: " << sipmid <<std::endl;
-      sipm_photon[sipmid]++;
+      // sipm_photon[sipmid]++;
+      photon_layer_cell[Layer_id][Cell_id] += 1;
   //     // nPhoton+=1;
   //     layer_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(3);
   //     // std::cout << "Photon layer id: " << layer_id << std::endl;
