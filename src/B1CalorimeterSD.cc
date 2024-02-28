@@ -30,6 +30,8 @@ void B1CalorimeterSD::Initialize(G4HCofThisEvent* hce)
   eTime=-1.;
   nPhoton=0;
   sipm_photon_num = 0;
+  Layer_num = 5;
+  Cell_num = 15;
 }
 
 G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
@@ -43,7 +45,7 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
     stepLength = step->GetStepLength();
   }
-  if ( edep==0. && stepLength == 0. ) return false;      
+  if ( edep==0. && stepLength == 0. ) return false;
 
   // Get hit accounting data for this cell
 */
@@ -107,26 +109,36 @@ void B1CalorimeterSD::EndOfEvent(G4HCofThisEvent*)
   //           perbar_pho_y[j][i] = 0 ;
   //       }
     // }
-  //fRootMgr->FillSipmPhoton(step->GetTrack()->GetTotalEnergy(),  step->GetPreStepPoint()->GetGlobalTime(), eID);
-  for(int idx = 0 ; idx < 2; idx++){
-    sipm_photon_num+=sipm_photon[idx];
-  }
-  sipm_photons.emplace_back(sipm_photon_num);
-  sipm_photon_num = 0;
-  fRootMgr->FillSipmPhoton(sipm_photons);
-  sipm_photons.clear();
+  // fRootMgr->FillSipmPhoton(step->GetTrack()->GetTotalEnergy(),  step->GetPreStepPoint()->GetGlobalTime(), eID);
+  // for(int idx = 0 ; idx < 2; idx++){
+  //   sipm_photon_num+=sipm_photon[idx];
+  // }
+  // sipm_photons.emplace_back(sipm_photon_num);
+  // sipm_photon_num = 0;
+  // fRootMgr->FillSipmPhoton(sipm_photons);
+  
+  // sipm_photons.clear();
   // photon_num.clear();
   // pho_bar_x.clear();
   // pho_bar_y.clear();
   // std::fill(photon_num.begin(), photon_num.end(), 0);
   // std::fill(pho_bar_x.begin(), pho_bar_x.end(), 0);
   // std::fill(pho_bar_y.begin(), pho_bar_y.end(), 0);
-  std::fill(sipm_photon, sipm_photon+4, 0);
+  // std::fill(sipm_photon, sipm_photon+4, 0);
   // eEnergy=0;
   // eTime=0;
-
   // eID=0;
-
+    for(G4int i = 0; i < Layer_num; i++)
+    {
+        for (G4int j = 0; j < Cell_num; j++)
+        {
+            photon_num.emplace_back(photon_layer_cell[i][j]);
+            photon_layer_cell[i][j] = 0;
+        }
+    }
+    fRootMgr->FillSipmPhoton(photon_num);
+    photon_num.clear();
+    std::fill(photon_num.begin(), photon_num.end(), 0);
 }
 
 

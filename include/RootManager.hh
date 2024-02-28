@@ -86,8 +86,15 @@ class RootManager {
         Double_t SipmPhoton_E;
         Double_t SipmPhoton_T;
         Int_t SipmPhoton_eID;
-        Int_t SipmPhoton_No;
+        Int_t SipmPhoton_No; 
+        Int_t layer_num = 5;
+        Int_t cell_num = 15;
+        Int_t Num = layer_num * cell_num;
+        std::string s1 = "Photon_num_Layer_";
+        std::string s2 = "_Cell_";
+        std::string s_name;
         std::vector<int> photon_;
+        std::vector<std::vector<int> > Cell_photon(75);
       //   std::vector<int> pho_num_x;
       //   std::vector<int> pho_num_y;
       //   std::vector<int> layer_id;

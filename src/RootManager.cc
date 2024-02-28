@@ -79,15 +79,24 @@ void RootManager::book()
         // tr->Branch("edep_Bar_y",&edep_Bar_y);
         
 
-         //record in sipm SD
+        //  record in sipm SD
         //  tr->Branch("SipmPhoton_energy", &SipmPhoton_E, "SipmPhoton_energy/D");
         //  tr->Branch("SipmPhoton_time", &SipmPhoton_T, "SipmPhoton_time/D");
         //  tr->Branch("SipmPhoton_eventID", &SipmPhoton_eID, "SipmPhoton_eventID/I");
         //  tr->Branch("SipmPhoton_Number", &SipmPhoton_No, "SipmPhoton_Number/I");
-         tr->Branch("Photon_num",&photon_);
+        //  tr->Branch("Photon_num",&photon_);
         //  tr->Branch("Photon_num_x",&pho_num_x);
         //  tr->Branch("Photon_num_y",&pho_num_y);
-         //SipmPhoton_No = 0;
+        //  SipmPhoton_No = 0;
+         for(Int_t i = 0; i < layer_num; i++)
+         {
+             for (Int_t j = 0; j < cell_num; j++)
+             {
+                 s_name = s1 + std::to_string(i+1) + s2 + std::to_string(j+1);
+                 tr->Branch(s_name, &Cell_photon[i * cell_num + j]);
+             }
+         }
+         
      }
 
 }
@@ -130,8 +139,12 @@ void RootManager::FillSipmPhoton( std::vector<int>& sipm_photons)
    
     photon_ = sipm_photons;
 
-    for(int idx = 0; idx < sipm_photons.size(); idx++)
-    G4cout << " [Root Manager] Sipm: "<<idx<<" ==> Catch " << sipm_photons[idx]<<  " photon \n" << G4endl;
+    // for(int idx = 0; idx < sipm_photons.size(); idx++)
+    // G4cout << " [Root Manager] Sipm: "<<idx<<" ==> Catch " << sipm_photons[idx]<<  " photon \n" << G4endl;
+    for(Int_t i = 0; i < Num; i++)
+    {
+        Cell_photon[i].emplace_back(photon_.at(i));
+    }
 }
 
 void RootManager::Fill()

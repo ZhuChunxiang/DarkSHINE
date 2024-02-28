@@ -76,6 +76,9 @@ class B1CalorimeterSD : public G4VSensitiveDetector
     int sipm_photon[5] = {0};
     int sipm_photon_num = 0;
     int photon_layer_cell[100][100] = {0};
+    int Layer_num;
+    int Cell_num;
+    std::vector<int> photon_num;
     // int layer_id;
     // int bar_id;
     // int xy_id;
