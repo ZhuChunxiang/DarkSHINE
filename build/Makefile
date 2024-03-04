@@ -398,6 +398,60 @@ src/B1RunAction.cc.s:
 	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1RunAction.cc.s
 .PHONY : src/B1RunAction.cc.s
 
+src/B1ScintHit.o: src/B1ScintHit.cc.o
+
+.PHONY : src/B1ScintHit.o
+
+# target to build an object file
+src/B1ScintHit.cc.o:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o
+.PHONY : src/B1ScintHit.cc.o
+
+src/B1ScintHit.i: src/B1ScintHit.cc.i
+
+.PHONY : src/B1ScintHit.i
+
+# target to preprocess a source file
+src/B1ScintHit.cc.i:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.i
+.PHONY : src/B1ScintHit.cc.i
+
+src/B1ScintHit.s: src/B1ScintHit.cc.s
+
+.PHONY : src/B1ScintHit.s
+
+# target to generate assembly for a file
+src/B1ScintHit.cc.s:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.s
+.PHONY : src/B1ScintHit.cc.s
+
+src/B1ScintillatorSD.o: src/B1ScintillatorSD.cc.o
+
+.PHONY : src/B1ScintillatorSD.o
+
+# target to build an object file
+src/B1ScintillatorSD.cc.o:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o
+.PHONY : src/B1ScintillatorSD.cc.o
+
+src/B1ScintillatorSD.i: src/B1ScintillatorSD.cc.i
+
+.PHONY : src/B1ScintillatorSD.i
+
+# target to preprocess a source file
+src/B1ScintillatorSD.cc.i:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.i
+.PHONY : src/B1ScintillatorSD.cc.i
+
+src/B1ScintillatorSD.s: src/B1ScintillatorSD.cc.s
+
+.PHONY : src/B1ScintillatorSD.s
+
+# target to generate assembly for a file
+src/B1ScintillatorSD.cc.s:
+	$(MAKE) -f CMakeFiles/exampleB1.dir/build.make CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.s
+.PHONY : src/B1ScintillatorSD.cc.s
+
 src/B1SteppingAction.o: src/B1SteppingAction.cc.o
 
 .PHONY : src/B1SteppingAction.o
@@ -490,6 +544,12 @@ help:
 	@echo "... src/B1RunAction.o"
 	@echo "... src/B1RunAction.i"
 	@echo "... src/B1RunAction.s"
+	@echo "... src/B1ScintHit.o"
+	@echo "... src/B1ScintHit.i"
+	@echo "... src/B1ScintHit.s"
+	@echo "... src/B1ScintillatorSD.o"
+	@echo "... src/B1ScintillatorSD.i"
+	@echo "... src/B1ScintillatorSD.s"
 	@echo "... src/B1SteppingAction.o"
 	@echo "... src/B1SteppingAction.i"
 	@echo "... src/B1SteppingAction.s"

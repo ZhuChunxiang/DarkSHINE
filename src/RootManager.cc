@@ -88,15 +88,16 @@ void RootManager::book()
         //  tr->Branch("Photon_num_x",&pho_num_x);
         //  tr->Branch("Photon_num_y",&pho_num_y);
         //  SipmPhoton_No = 0;
-         for(Int_t i = 0; i < layer_num; i++)
-         {
-             for (Int_t j = 0; j < cell_num; j++)
-             {
-                 s_name = s1 + std::to_string(i+1) + s2 + std::to_string(j+1);
-                 tr->Branch(s_name, &Cell_photon[i * cell_num + j]);
-             }
-         }
-         
+        // for(Int_t i = 0; i < layer_num; i++)
+        // {
+        //     for (Int_t j = 0; j < cell_num; j++)
+        //     {
+        //         s_name = s1 + std::to_string(i+1) + s2 + std::to_string(j+1);
+        //         tr->Branch(s_name, &Cell_photon.at(i * cell_num + j));
+        //     }
+        // }
+         tr->Branch("Each_Cell_Photon_num", &Cell_energy_dep);
+         tr->Branch("Each_Cell_Energy_dep", &Cell_photon);
      }
 
 }
@@ -115,7 +116,7 @@ void RootManager::FillSim(double Energy, double WLSEnergy, int EventNb, int OPin
     Ab_edep  = ab_edep;
 }
 
-// void RootManager::FillScinEdep(std::vector<double>&layer_edep , std::vector<double>&edep_bar_x , std::vector<double>&edep_bar_y){
+// void RootManager::FillScinEdep(std::vector<double>& layer_edep, std::vector<double>& edep_bar_x, std::vector<double>& edep_bar_y){
 //     // edep_per_scintbar = edep_perbar;
 //     // TotalEdep_scin = 0;
 //     // for(it = edep_perbar.begin(); it != edep_perbar.end() ; it++){
@@ -132,6 +133,15 @@ void RootManager::FillSim(double Energy, double WLSEnergy, int EventNb, int OPin
  
 // }
 
+void RootManager::FillScinEdep(std::vector<double>& cell_edep)
+{
+    energy_dep_ = cell_edep;
+    for (Int_t i = 0; i < Num; i++)
+    {
+        Cell_energy_dep.at(i).emplace_back(energy_dep_.at(i));
+    }
+}
+
 
 void RootManager::FillSipmPhoton( std::vector<int>& sipm_photons)
 {
@@ -143,7 +153,7 @@ void RootManager::FillSipmPhoton( std::vector<int>& sipm_photons)
     // G4cout << " [Root Manager] Sipm: "<<idx<<" ==> Catch " << sipm_photons[idx]<<  " photon \n" << G4endl;
     for(Int_t i = 0; i < Num; i++)
     {
-        Cell_photon[i].emplace_back(photon_.at(i));
+        Cell_photon.at(i).emplace_back(photon_.at(i));
     }
 }
 

@@ -57,6 +57,7 @@ class RootManager {
 
         /* fill methods */
         void FillSim(Double_t Edep, Double_t WLSEdep, int fEvtNb, int OPinFiber, int OPinScint, int pid, std::vector<double> Partime,Double_t ab_edep); //fill from endOfEvent
+        void FillScinEdep(std::vector<double>& cell_edep); // fill from scintillator
         void FillSipmPhoton(std::vector<int>& sipm_photons); //fill from SD
       //   void FillScinEdep(std::vector<double>&layer_edep , std::vector<double>&edep_bar_x , std::vector<double>&edep_bar_y);
         void Fill();
@@ -93,8 +94,10 @@ class RootManager {
         std::string s1 = "Photon_num_Layer_";
         std::string s2 = "_Cell_";
         std::string s_name;
+        std::vector<double> energy_dep_;
         std::vector<int> photon_;
-        std::vector<std::vector<int> > Cell_photon(75);
+        std::vector<std::vector<double> > Cell_energy_dep;
+        std::vector<std::vector<int> > Cell_photon;
       //   std::vector<int> pho_num_x;
       //   std::vector<int> pho_num_y;
       //   std::vector<int> layer_id;

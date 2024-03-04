@@ -27,12 +27,12 @@
 /// \file B1CalorimeterSD.hh
 /// \brief Definition of the B1CalorimeterSD class
 
-#ifndef B1CalorimeterSD_h
-#define B1CalorimeterSD_h 1
+#ifndef B1ScintillatorSD_h
+#define B1ScintillatorSD_h 1
 
 #include "G4VSensitiveDetector.hh"
 
-#include "B1CalorHit.hh"
+#include "B1ScintHit.hh"
 //now we use rootmgr or IO, skip calohit vector
 #include "RootManager.hh"
 
@@ -49,11 +49,11 @@ class G4HCofThisEvent;
 /// The values are accounted in hits in ProcessHits() function which is called
 /// by Geant4 kernel at each step.
 
-class B1CalorimeterSD : public G4VSensitiveDetector
+class B1ScintillatorSD : public G4VSensitiveDetector
 {
   public:
-    B1CalorimeterSD(const G4String& name, RootManager *rootMng);
-    virtual ~B1CalorimeterSD();
+    B1ScintillatorSD(const G4String& name, RootManager *rootMng);
+    virtual ~B1ScintillatorSD();
   
     // methods from base class
     virtual void   Initialize(G4HCofThisEvent* hitCollection);
@@ -63,22 +63,23 @@ class B1CalorimeterSD : public G4VSensitiveDetector
 
   private:
     //B1EventAction* fEventAction;
-    B1CalorHitsCollection* fHitsCollection;
+    B1ScintHitsCollection* fHitsCollection;
     G4int  fNofCells;
     RootManager * fRootMgr;
 
   
-    // int eID;
-    // double eEnergy;
-    // double eTime;
-    int nPhoton;
-    std::vector<int> sipm_photons;
-    int sipm_photon[5] = {0};
-    int sipm_photon_num = 0;
-    int photon_layer_cell[100][100] = {0};
-    int Layer_num;
-    int Cell_num;
-    std::vector<int> photon_num;
+    int eID;
+    double eEnergy;
+    double eTime;
+    // int nPhoton;
+    // std::vector<int> sipm_photons;
+    // int sipm_photon[5] = {0};
+    // int sipm_photon_num = 0;
+    double Energy_dep_layer_cell[100][100] = {0};
+    std::vector<double> Energy_dep_per_cell;
+    int Layer_n;
+    int Cell_n;
+    // std::vector<int> photon_num;
     // int layer_id;
     // int bar_id;
     // int xy_id;

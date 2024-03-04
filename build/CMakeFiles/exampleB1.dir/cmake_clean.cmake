@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/exampleB1.dir/src/B1EventAction.cc.o"
   "CMakeFiles/exampleB1.dir/src/B1PrimaryGeneratorAction.cc.o"
   "CMakeFiles/exampleB1.dir/src/B1RunAction.cc.o"
+  "CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o"
+  "CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o"
   "CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o"
   "CMakeFiles/exampleB1.dir/src/RootManager.cc.o"
   "exampleB1.pdb"

@@ -1,4 +1,4 @@
-#include "B1CalorimeterSD.hh"
+#include "B1ScintillatorSD.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -13,30 +13,29 @@
 #include "G4Event.hh"
 
 
-B1CalorimeterSD::B1CalorimeterSD(const G4String& name, RootManager *rootMng) : G4VSensitiveDetector(name),
+B1ScintillatorSD::B1ScintillatorSD(const G4String& name, RootManager *rootMng) : G4VSensitiveDetector(name),
 fRootMgr(rootMng)
 {
     G4cout << "SensitiveDetector Processed Successfully " << G4endl;
 }
 
-B1CalorimeterSD::~B1CalorimeterSD()
+B1ScintillatorSD::~B1ScintillatorSD()
 {
 }
 
-void B1CalorimeterSD::Initialize(G4HCofThisEvent* hce)
+void B1ScintillatorSD::Initialize(G4HCofThisEvent* hce)
 {
-  // eID=-1;
-  // eEnergy=0.;
-  // eTime=-1.;
-  nPhoton=0;
-  sipm_photon_num = 0;
-  Layer_num = 15;
-  Cell_num = 15;
+  eID=-1;
+  eEnergy=0.;
+  eTime=-1.;
+  // nPhoton=0;
+  // sipm_photon_num = 0;
+  Layer_n = 15;
+  Cell_n = 15;
 }
 
-G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
-{  //since I am a SIPM sensor, no deposition here is considered!
-/*
+G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
+{ 
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
   
@@ -48,7 +47,6 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   if ( edep==0. && stepLength == 0. ) return false;
 
   // Get hit accounting data for this cell
-*/
   // Get hit for total accounting
 
   //ok, here we directly call rootmgr ro record the optical photon 
@@ -60,16 +58,16 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   // }
   // eEnergy=step->GetTrack()->GetTotalEnergy();
   // eTime=step->GetPreStepPoint()->GetGlobalTime();
-  G4String name = step->GetTrack()->GetDefinition()->GetParticleName();
+  // G4String name = step->GetTrack()->GetDefinition()->GetParticleName();
   // G4cout<< "name is "<< name << G4endl;
-  if (name=="opticalphoton")
-  {
-      auto Layer_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
-      auto Cell_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
+  // if (name=="opticalphoton")
+  // {
+      // auto Layer_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
+      // auto Cell_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
       // auto Sipm_id =  step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber();
       // std:: cout << "sipm id: " << sipmid <<std::endl;
       // sipm_photon[sipmid]++;
-      photon_layer_cell[Layer_id][Cell_id] += 1;
+      // photon_layer_cell[Layer_id][Cell_id] += 1;
   //     // nPhoton+=1;
   //     layer_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(3);
   //     // std::cout << "Photon layer id: " << layer_id << std::endl;
@@ -77,7 +75,7 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   //     xy_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
   //     bar_id = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
   // // bar_edep.push_back(eEnergy_scin);
-  // //eEnergy_scin = step->GetTrack()->GetTotalEnergy();
+  // // eEnergy_scin = step->GetTrack()->GetTotalEnergy();
   // // edep_perbar.at(copy_num) += eEnergy_scin;
   //   if(xy_id == 0){
   //       perbar_pho_x[layer_id][bar_id] += 1;
@@ -85,7 +83,10 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   //   else if(xy_id==1){
   //      perbar_pho_y[layer_id][bar_id] += 1;
   //   }
-  }
+  // }
+  auto iLayer = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
+  auto iCell = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
+  Energy_dep_layer_cell[iLayer][iCell] += edep;
 
   //fEventAction->AddSipmEdep(eEnergy);
   //fEventAction->GetSipmTime(eTime);
@@ -94,7 +95,7 @@ G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   return true;
 }
 
-void B1CalorimeterSD::EndOfEvent(G4HCofThisEvent*)
+void B1ScintillatorSD::EndOfEvent(G4HCofThisEvent*)
 {
   // for(int i = 0 ; i < 20 ; i++){
   //       for (int j = 0 ; j < layer_num ; j++){
@@ -128,17 +129,17 @@ void B1CalorimeterSD::EndOfEvent(G4HCofThisEvent*)
   // eEnergy=0;
   // eTime=0;
   // eID=0;
-    for(G4int i = 0; i < Layer_num; i++)
+    for(G4int i = 0; i < Layer_n; i++)
     {
-        for (G4int j = 0; j < Cell_num; j++)
+        for (G4int j = 0; j < Cell_n; j++)
         {
-            photon_num.emplace_back(photon_layer_cell[i][j]);
-            photon_layer_cell[i][j] = 0;
+            Energy_dep_per_cell.emplace_back(Energy_dep_layer_cell[i][j]);
+            Energy_dep_layer_cell[i][j] = 0;
         }
     }
-    fRootMgr->FillSipmPhoton(photon_num);
-    photon_num.clear();
-    std::fill(photon_num.begin(), photon_num.end(), 0);
+    fRootMgr->FillScinEdep(Energy_dep_per_cell);
+    Energy_dep_per_cell.clear();
+    std::fill(Energy_dep_per_cell.begin(), Energy_dep_per_cell.end(), 0);
 }
 
 

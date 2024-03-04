@@ -161,9 +161,35 @@ CMakeFiles/exampleB1.dir/src/B1RunAction.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/exampleB1.dir/src/B1RunAction.cc.s"
 	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1RunAction.cc -o CMakeFiles/exampleB1.dir/src/B1RunAction.cc.s
 
+CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o: CMakeFiles/exampleB1.dir/flags.make
+CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o: ../src/B1ScintHit.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o -c /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintHit.cc
+
+CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.i"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintHit.cc > CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.i
+
+CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.s"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintHit.cc -o CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.s
+
+CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o: CMakeFiles/exampleB1.dir/flags.make
+CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o: ../src/B1ScintillatorSD.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o -c /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintillatorSD.cc
+
+CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.i"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintillatorSD.cc > CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.i
+
+CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.s"
+	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1ScintillatorSD.cc -o CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.s
+
 CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o: CMakeFiles/exampleB1.dir/flags.make
 CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o: ../src/B1SteppingAction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o"
 	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o -c /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/B1SteppingAction.cc
 
 CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.i: cmake_force
@@ -176,7 +202,7 @@ CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.s: cmake_force
 
 CMakeFiles/exampleB1.dir/src/RootManager.cc.o: CMakeFiles/exampleB1.dir/flags.make
 CMakeFiles/exampleB1.dir/src/RootManager.cc.o: ../src/RootManager.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/exampleB1.dir/src/RootManager.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/exampleB1.dir/src/RootManager.cc.o"
 	/cvmfs/sft.cern.ch/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/exampleB1.dir/src/RootManager.cc.o -c /lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/src/RootManager.cc
 
 CMakeFiles/exampleB1.dir/src/RootManager.cc.i: cmake_force
@@ -197,6 +223,8 @@ exampleB1_OBJECTS = \
 "CMakeFiles/exampleB1.dir/src/B1EventAction.cc.o" \
 "CMakeFiles/exampleB1.dir/src/B1PrimaryGeneratorAction.cc.o" \
 "CMakeFiles/exampleB1.dir/src/B1RunAction.cc.o" \
+"CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o" \
+"CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o" \
 "CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o" \
 "CMakeFiles/exampleB1.dir/src/RootManager.cc.o"
 
@@ -211,6 +239,8 @@ exampleB1: CMakeFiles/exampleB1.dir/src/B1DetectorConstruction.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/src/B1EventAction.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/src/B1PrimaryGeneratorAction.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/src/B1RunAction.cc.o
+exampleB1: CMakeFiles/exampleB1.dir/src/B1ScintHit.cc.o
+exampleB1: CMakeFiles/exampleB1.dir/src/B1ScintillatorSD.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/src/B1SteppingAction.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/src/RootManager.cc.o
 exampleB1: CMakeFiles/exampleB1.dir/build.make
@@ -284,7 +314,7 @@ exampleB1: /cvmfs/sft.cern.ch/lcg/views/LCG_97rc4python3/x86_64-centos7-gcc9-opt
 exampleB1: /cvmfs/sft.cern.ch/lcg/views/LCG_97rc4python3/x86_64-centos7-gcc9-opt/lib64/libG4global.so
 exampleB1: /cvmfs/sft.cern.ch/lcg/releases/clhep/2.4.1.3-78165/x86_64-centos7-gcc9-opt/lib/libCLHEP-2.4.1.3.so
 exampleB1: CMakeFiles/exampleB1.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable exampleB1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lustre/collider/zhuchunxiang/dp/HCAL/HCAL_Prototype/darkshine_hcal_cx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable exampleB1"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/exampleB1.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
