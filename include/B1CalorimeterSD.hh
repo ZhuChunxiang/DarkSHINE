@@ -52,7 +52,7 @@ class G4HCofThisEvent;
 class B1CalorimeterSD : public G4VSensitiveDetector
 {
   public:
-    B1CalorimeterSD(const G4String& name, RootManager *rootMng);
+    B1CalorimeterSD(const G4String& name, RootManager *rootMng, G4int nofLayers, G4int nofCells);
     virtual ~B1CalorimeterSD();
   
     // methods from base class
@@ -64,7 +64,8 @@ class B1CalorimeterSD : public G4VSensitiveDetector
   private:
     //B1EventAction* fEventAction;
     B1CalorHitsCollection* fHitsCollection;
-    G4int  fNofCells;
+    G4int fNofLayers;
+    G4int fNofCells;
     RootManager * fRootMgr;
 
   
@@ -75,8 +76,8 @@ class B1CalorimeterSD : public G4VSensitiveDetector
     std::vector<int> sipm_photons;
     int sipm_photon[5] = {0};
     int sipm_photon_num = 0;
-    int photon_layer_cell[100][100] = {0};
-    int Layer_num;
+    int photon_layer_cell[200][200] = {0};
+    // int Layer_num;
     int Cell_num;
     std::vector<int> photon_num;
     // int layer_id;

@@ -13,7 +13,9 @@
 #include "G4Event.hh"
 
 
-B1CalorimeterSD::B1CalorimeterSD(const G4String& name, RootManager *rootMng) : G4VSensitiveDetector(name),
+B1CalorimeterSD::B1CalorimeterSD(const G4String& name, RootManager *rootMng, G4int nofLayers, G4int nofCells) : G4VSensitiveDetector(name),
+fNofLayers(nofLayers),
+fNofCells(nofCells),
 fRootMgr(rootMng)
 {
     G4cout << "SensitiveDetector Processed Successfully " << G4endl;
@@ -30,8 +32,8 @@ void B1CalorimeterSD::Initialize(G4HCofThisEvent* hce)
   // eTime=-1.;
   nPhoton=0;
   sipm_photon_num = 0;
-  Layer_num = 15;
-  Cell_num = 15;
+  // Layer_num = 15;
+  // Cell_num = 15;
 }
 
 G4bool B1CalorimeterSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
@@ -128,9 +130,9 @@ void B1CalorimeterSD::EndOfEvent(G4HCofThisEvent*)
   // eEnergy=0;
   // eTime=0;
   // eID=0;
-    for(G4int i = 0; i < Layer_num; i++)
+    for(G4int i = 0; i < fNofLayers; i++)
     {
-        for (G4int j = 0; j < Cell_num; j++)
+        for (G4int j = 0; j < fNofCells; j++)
         {
             photon_num.emplace_back(photon_layer_cell[i][j]);
             photon_layer_cell[i][j] = 0;

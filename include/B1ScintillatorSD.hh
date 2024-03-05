@@ -52,7 +52,7 @@ class G4HCofThisEvent;
 class B1ScintillatorSD : public G4VSensitiveDetector
 {
   public:
-    B1ScintillatorSD(const G4String& name, RootManager *rootMng);
+    B1ScintillatorSD(const G4String& name, RootManager *rootMng, G4int NofLayers, G4int NofCells);
     virtual ~B1ScintillatorSD();
   
     // methods from base class
@@ -64,7 +64,8 @@ class B1ScintillatorSD : public G4VSensitiveDetector
   private:
     //B1EventAction* fEventAction;
     B1ScintHitsCollection* fHitsCollection;
-    G4int  fNofCells;
+    G4int FNofLayers;
+    G4int FNofCells;
     RootManager * fRootMgr;
 
   
@@ -75,9 +76,9 @@ class B1ScintillatorSD : public G4VSensitiveDetector
     // std::vector<int> sipm_photons;
     // int sipm_photon[5] = {0};
     // int sipm_photon_num = 0;
-    double Energy_dep_layer_cell[100][100] = {0};
+    double Energy_dep_layer_cell[200][200] = {0};
     std::vector<double> Energy_dep_per_cell;
-    int Layer_n;
+    // int Layer_n;
     int Cell_n;
     // std::vector<int> photon_num;
     // int layer_id;

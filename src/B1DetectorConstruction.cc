@@ -118,7 +118,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
                           checkOverlaps);  // overlaps checking
 
     // Geometry Parameter
-    G4int nLayer = 15, nCell = 15; // The number of the layers and the number of cells in each layer
+    G4int nLayer = 100, nCell = 15; // The number of the layers and the number of cells in each layer
     G4double Air_Gap = 0.02 * mm; // Air gap geometry parameter
 
     G4double Scint_X = 5 * cm, Scint_Y = 75 * cm, Scint_Z = 1 * cm; // Scintillator geometry parameter
@@ -635,11 +635,11 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     logicSIPM->SetVisAttributes(G4VisAttributes(SD_colour));
 
     // set sipm to sd
-    auto sipmSD = new B1CalorimeterSD("/SiliconPMSD", fRootMng);
+    auto sipmSD = new B1CalorimeterSD("/SiliconPMSD", fRootMng, nLayer, nCell);
     G4SDManager::GetSDMpointer()->AddNewDetector(sipmSD);
     logicSIPM->SetSensitiveDetector(sipmSD);
     // Set scintillator to sensitive detector
-    auto scinSD = new B1ScintillatorSD("/ScintillatorSD", fRootMng);
+    auto scinSD = new B1ScintillatorSD("/ScintillatorSD", fRootMng, nLayer, nCell);
     G4SDManager::GetSDMpointer()->AddNewDetector(scinSD);
     logicScint->SetSensitiveDetector(scinSD);
 

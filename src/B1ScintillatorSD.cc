@@ -13,7 +13,9 @@
 #include "G4Event.hh"
 
 
-B1ScintillatorSD::B1ScintillatorSD(const G4String& name, RootManager *rootMng) : G4VSensitiveDetector(name),
+B1ScintillatorSD::B1ScintillatorSD(const G4String& name, RootManager *rootMng, G4int NofLayers, G4int NofCells) : G4VSensitiveDetector(name),
+FNofLayers(NofLayers),
+FNofCells(NofCells),
 fRootMgr(rootMng)
 {
     G4cout << "SensitiveDetector Processed Successfully " << G4endl;
@@ -30,8 +32,8 @@ void B1ScintillatorSD::Initialize(G4HCofThisEvent* hce)
   eTime=-1.;
   // nPhoton=0;
   // sipm_photon_num = 0;
-  Layer_n = 15;
-  Cell_n = 15;
+  // Layer_n = 15;
+  // Cell_n = 15;
 }
 
 G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
@@ -129,9 +131,9 @@ void B1ScintillatorSD::EndOfEvent(G4HCofThisEvent*)
   // eEnergy=0;
   // eTime=0;
   // eID=0;
-    for(G4int i = 0; i < Layer_n; i++)
+    for(G4int i = 0; i < FNofLayers; i++)
     {
-        for (G4int j = 0; j < Cell_n; j++)
+        for (G4int j = 0; j < FNofCells; j++)
         {
             Energy_dep_per_cell.emplace_back(Energy_dep_layer_cell[i][j]);
             Energy_dep_layer_cell[i][j] = 0;
