@@ -33,6 +33,7 @@
 #include "B1CalorimeterSD.hh"
 // #include "B1Run.hh"
 
+#include "G4AnalysisManager.hh"
 #include "G4RunManager.hh"
 #include "G4Run.hh"
 #include "G4AccumulableManager.hh"
@@ -48,24 +49,23 @@ B1RunAction::B1RunAction(RootManager *rootMng)
   fEdep(0.),
   fEdep2(0.)
 { 
-    fRootMng = rootMng;  
-    fRootMng->book();
-  //// add new units for dose
+    fRootMng = rootMng;
+    //// add new units for dose
    
-  //const G4double milligray = 1.e-3*gray;
-  //const G4double microgray = 1.e-6*gray;
-  //const G4double nanogray  = 1.e-9*gray;  
-  //const G4double picogray  = 1.e-12*gray;
+    //const G4double milligray = 1.e-3*gray;
+    //const G4double microgray = 1.e-6*gray;
+    //const G4double nanogray  = 1.e-9*gray;  
+    //const G4double picogray  = 1.e-12*gray;
    
-  //new G4UnitDefinition("milligray", "milliGy" , "Dose", milligray);
-  //new G4UnitDefinition("microgray", "microGy" , "Dose", microgray);
-  //new G4UnitDefinition("nanogray" , "nanoGy"  , "Dose", nanogray);
-  //new G4UnitDefinition("picogray" , "picoGy"  , "Dose", picogray); 
+    //new G4UnitDefinition("milligray", "milliGy" , "Dose", milligray);
+    //new G4UnitDefinition("microgray", "microGy" , "Dose", microgray);
+    //new G4UnitDefinition("nanogray" , "nanoGy"  , "Dose", nanogray);
+    //new G4UnitDefinition("picogray" , "picoGy"  , "Dose", picogray); 
 
-  //// Register accumulable to the accumulable manager
-  //G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
-  //accumulableManager->RegisterAccumulable(fEdep);
-  //accumulableManager->RegisterAccumulable(fEdep2); 
+    //// Register accumulable to the accumulable manager
+    //G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
+    //accumulableManager->RegisterAccumulable(fEdep);
+    //accumulableManager->RegisterAccumulable(fEdep2); 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,13 +76,16 @@ B1RunAction::~B1RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1RunAction::BeginOfRunAction(const G4Run* run)
-{ ////about clock
-  // start = clock();
-  // inform the runManager to save random number seed
-  G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-
-  //// reset accumulables to their initial values
-
+{ 
+    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+    if (analysisManager->IsActive())
+        analysisManager->OpenFile();
+    fRootMng->book();
+    ////about clock
+    // start = clock();
+    // inform the runManager to save random number seed
+    G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+    //// reset accumulables to their initial values
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -52,7 +52,7 @@ class G4HCofThisEvent;
 class B1CalorimeterSD : public G4VSensitiveDetector
 {
   public:
-    B1CalorimeterSD(const G4String& name, RootManager *rootMng, G4int nofLayers, G4int nofCells);
+    B1CalorimeterSD(const G4String& name, const G4String& hitsCollectionName, RootManager *rootMng, G4int nofLayers, G4int nofCells);
     virtual ~B1CalorimeterSD();
   
     // methods from base class

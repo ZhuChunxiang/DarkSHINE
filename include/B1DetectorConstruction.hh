@@ -51,6 +51,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
 
   protected:
     G4LogicalVolume*  fScoringVolume;
+    void SaveGeometry();
     void DefineMaterials();
     RootManager * fRootMng;
 

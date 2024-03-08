@@ -13,11 +13,12 @@
 #include "G4Event.hh"
 
 
-B1ScintillatorSD::B1ScintillatorSD(const G4String& name, RootManager *rootMng, G4int NofLayers, G4int NofCells) : G4VSensitiveDetector(name),
+B1ScintillatorSD::B1ScintillatorSD(const G4String& name, const G4String& hitsCollectionName, RootManager *rootMng, G4int NofLayers, G4int NofCells) : G4VSensitiveDetector(name),
 FNofLayers(NofLayers),
 FNofCells(NofCells),
 fRootMgr(rootMng)
 {
+    collectionName.insert(hitsCollectionName);
     G4cout << "SensitiveDetector Processed Successfully " << G4endl;
 }
 
@@ -34,6 +35,20 @@ void B1ScintillatorSD::Initialize(G4HCofThisEvent* hce)
   // sipm_photon_num = 0;
   // Layer_n = 15;
   // Cell_n = 15;
+
+  // Create hits collection
+  fHitsCollection = new B1ScintHitsCollection(SensitiveDetectorName, collectionName[0]);
+  
+  // Add this collection in hce
+  G4int fhcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+  hce->AddHitsCollection(fhcID, fHitsCollection);
+  
+  // Create hits
+  // fill calorimeter hits with zero energy deposition
+  for (G4int i = 0; i < (FNofLayers * FNofCells + 1); i++)
+  {
+      fHitsCollection->insert(new B1ScintHit());
+  }
 }
 
 G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
@@ -49,9 +64,26 @@ G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   if ( edep==0. && stepLength == 0. ) return false;
 
   // Get hit accounting data for this cell
+  auto iLayer = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
+  auto iCell = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
+  // Energy_dep_layer_cell[iLayer][iCell] += edep;
+  G4int hit_id = iLayer * FNofCells + iCell;
+  auto hit_ = (*fHitsCollection)[hit_id]; // 解指针，判断放入哪个hit_id空间
+  if (!hit) {
+      G4ExceptionDescription msg;
+      msg << "Cannot access hit " << copyNo;
+      G4Exception("CalorimeterSD::ProcessHits()",
+          "MyCode0004", FatalException, msg);
+  }
+  
   // Get hit for total accounting
+  auto hit_ = (*fHitsCollection)[fHitsCollection->entries()-1];
+  
+  // Add values
+  hit->Add(edep, stepLength);
+  hitTotal->Add(edep, stepLength);
 
-  //ok, here we directly call rootmgr ro record the optical photon 
+  // ok, here we directly call rootmgr ro record the optical photon 
   // G4cout << " [SD] ==> Catch one photon \n" << G4endl;
   // const G4Event* event =  G4RunManager::GetRunManager()->GetCurrentEvent();
   // if(event)
@@ -86,9 +118,6 @@ G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   //      perbar_pho_y[layer_id][bar_id] += 1;
   //   }
   // }
-  auto iLayer = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(2);
-  auto iCell = step->GetPreStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
-  Energy_dep_layer_cell[iLayer][iCell] += edep;
 
   //fEventAction->AddSipmEdep(eEnergy);
   //fEventAction->GetSipmTime(eTime);

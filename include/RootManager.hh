@@ -26,6 +26,11 @@
 #include <type_traits>
 #include <vector>
 
+#ifdef __ROOTCLING__
+#pragma link C++ class vector<vector <double> >+;
+#pragma link C++ class vector<vector <int> >+;
+#endif
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class TFile;
@@ -60,6 +65,7 @@ class RootManager {
         void FillScinEdep(std::vector<double>& cell_edep); // fill from scintillator
         void FillSipmPhoton(std::vector<int>& sipm_photons); //fill from SD
       //   void FillScinEdep(std::vector<double>&layer_edep , std::vector<double>&edep_bar_x , std::vector<double>&edep_bar_y);
+        void FillGeometry(const G4String& name);
         void Fill();
 
      public:
@@ -88,7 +94,7 @@ class RootManager {
         Double_t SipmPhoton_T;
         Int_t SipmPhoton_eID;
         Int_t SipmPhoton_No; 
-        Int_t layer_num = 5;
+        Int_t layer_num = 100;
         Int_t cell_num = 15;
         Int_t Num = layer_num * cell_num;
         std::string s1 = "Photon_num_Layer_";

@@ -31,6 +31,8 @@
 #include "B1RunAction.hh"
 #include "B1CalorimeterSD.hh"
 #include "B1CalorHit.hh"
+#include "B1ScintillatorSD.hh"
+#include "B1ScintHit.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -74,8 +76,19 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::EndOfEventAction(const G4Event* evt)
-{ /*  
-    */
+{
+    // Get hits collections IDs (only once)
+    if (fScinHCID == -1)
+    {
+        fScinHCID = G4SDManager::GetSDMpointer()->GetCollectionID("ScintillatorHitsCollection");
+    }
+    
+    // Get hits collections
+    auto scinHC = GetHitsCollection(fScinHCID, event);
+
+    // Get hit with total values
+    auto scinHit_Total = (*scinHC)[scinHC->entries()-1];
+    
     // accumulate statistics in run action
     G4int evtNb = evt->GetEventID();
     G4cout << " ================= Event : "<< evtNb << G4endl;

@@ -34,6 +34,7 @@
 #include "globals.hh"
 #include "RootManager.hh"
 #include "B1CalorimeterSD.hh"
+#include "B1ScintillatorSD.hh"
 #include <time.h>
 
 class B1RunAction;
@@ -85,11 +86,12 @@ class B1EventAction : public G4UserEventAction
     std::vector<double> SipmEtime;
     G4double     fAbEdep;
 
-    B1CalorHitsCollection* GetHitsCollection(G4int hcID,
+    B1ScintHitsCollection* GetHitsCollection(G4int hcID,
                                              const G4Event* event) const;
     void PrintEventStatistics(G4double absoEdep, G4double absoTrackLength) const;
 
     G4int fsipmHCID;
+    G4int fScinHCID = -1;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

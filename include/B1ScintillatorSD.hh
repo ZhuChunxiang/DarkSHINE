@@ -52,7 +52,7 @@ class G4HCofThisEvent;
 class B1ScintillatorSD : public G4VSensitiveDetector
 {
   public:
-    B1ScintillatorSD(const G4String& name, RootManager *rootMng, G4int NofLayers, G4int NofCells);
+    B1ScintillatorSD(const G4String& name, const G4String& hitsCollectionName, RootManager *rootMng, G4int NofLayers, G4int NofCells);
     virtual ~B1ScintillatorSD();
   
     // methods from base class

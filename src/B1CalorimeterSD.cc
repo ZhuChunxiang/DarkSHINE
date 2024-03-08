@@ -13,11 +13,12 @@
 #include "G4Event.hh"
 
 
-B1CalorimeterSD::B1CalorimeterSD(const G4String& name, RootManager *rootMng, G4int nofLayers, G4int nofCells) : G4VSensitiveDetector(name),
+B1CalorimeterSD::B1CalorimeterSD(const G4String& name, const G4String& hitsCollectionName, RootManager *rootMng, G4int nofLayers, G4int nofCells) : G4VSensitiveDetector(name),
 fNofLayers(nofLayers),
 fNofCells(nofCells),
 fRootMgr(rootMng)
 {
+    collectionName.insert(hitsCollectionName);
     G4cout << "SensitiveDetector Processed Successfully " << G4endl;
 }
 

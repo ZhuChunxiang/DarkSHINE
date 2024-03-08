@@ -95,7 +95,7 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     // World
     G4double world_sizeX = 400 * cm;
     G4double world_sizeY = 400 * cm;
-    G4double world_sizeZ = 400 * cm;
+    G4double world_sizeZ = 800 * cm;
     G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
     G4Box *solidWorld =
@@ -635,11 +635,11 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     logicSIPM->SetVisAttributes(G4VisAttributes(SD_colour));
 
     // set sipm to sd
-    auto sipmSD = new B1CalorimeterSD("/SiliconPMSD", fRootMng, nLayer, nCell);
+    auto sipmSD = new B1CalorimeterSD("SiliconPMSD", "SiliconPMHitsCollection", fRootMng, nLayer, nCell);
     G4SDManager::GetSDMpointer()->AddNewDetector(sipmSD);
     logicSIPM->SetSensitiveDetector(sipmSD);
     // Set scintillator to sensitive detector
-    auto scinSD = new B1ScintillatorSD("/ScintillatorSD", fRootMng, nLayer, nCell);
+    auto scinSD = new B1ScintillatorSD("ScintillatorSD", "ScintillatorHitsCollection", fRootMng, nLayer, nCell);
     G4SDManager::GetSDMpointer()->AddNewDetector(scinSD);
     logicScint->SetSensitiveDetector(scinSD);
 
@@ -671,6 +671,17 @@ G4VPhysicalVolume *B1DetectorConstruction::Construct()
     // always return the physical World
     //
     return physWorld;
+}
+
+void B1DetectorConstruction::SaveGeometry()
+{
+/*    // Save GDML to ROOT File
+    auto filename = "geometry.gdml";
+
+    G4GDMLParser parser;
+    parser.Write(filename, physWorld)；
+
+    fRootMng->FillGeometry(filename);*/
 }
 
 void B1DetectorConstruction::DefineMaterials()
