@@ -61,6 +61,26 @@ B1EventAction::~B1EventAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1ScintHitsCollection*
+B1EventAction::GetHitsCollection(G4int hcID,
+    const G4Event* event) const
+{
+    auto hitsCollection
+        = static_cast<B1ScintHitsCollection*>(
+            event->GetHCofThisEvent()->GetHC(hcID));
+
+    if (!hitsCollection) {
+        G4ExceptionDescription msg;
+        msg << "Cannot access hitsCollection ID " << hcID;
+        G4Exception("EventAction::GetHitsCollection()",
+            "MyCode0003", FatalException, msg);
+    }
+
+    return hitsCollection;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /*
 */
 void B1EventAction::BeginOfEventAction(const G4Event*)
