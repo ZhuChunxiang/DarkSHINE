@@ -37,6 +37,9 @@
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
+const G4int fN_Layers = 100;
+const G4int fN_Cells = 15;
+
 /// Detector construction class to define materials and geometry.
 
 class B1DetectorConstruction : public G4VUserDetectorConstruction
@@ -55,7 +58,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     void DefineMaterials();
     RootManager * fRootMng;
 
-    G4int fNofLayers;
+    // G4int fNofLayers;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -33,7 +33,7 @@
 #include "B1CalorimeterSD.hh"
 // #include "B1Run.hh"
 
-#include "G4AnalysisManager.hh"
+#include "g4root.hh"
 #include "G4RunManager.hh"
 #include "G4Run.hh"
 #include "G4AccumulableManager.hh"
@@ -66,6 +66,28 @@ B1RunAction::B1RunAction(RootManager *rootMng)
     //G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
     //accumulableManager->RegisterAccumulable(fEdep);
     //accumulableManager->RegisterAccumulable(fEdep2); 
+
+    auto analysisManager = G4AnalysisManager::Instance();
+    // Create directories
+    // analysisManager->SetDefaultFileType("root");
+    // analysisManager->SetVerboseLevel(1);
+    analysisManager->SetNtupleMerging(true);
+ 
+    // Creating ntuple
+    analysisManager->CreateNtuple("HCAL_E_Total", "HCAL_E_Total");
+    analysisManager->CreateNtupleDColumn("HCAL_E_Total_Scin");
+    analysisManager->FinishNtuple();
+
+    analysisManager->CreateNtuple("HCAL_E_Cell", "HCAL_E_Cell");
+    for (G4int i = 0; i < fN_Layers; i++)
+    {
+        for (G4int j = 0; j < fN_Cells; j++)
+        {
+            G4String name = "HCAL_E_dep_Layer_" + std::to_string(i+1) + "_Cell_" + std::to_string(j+1);
+            analysisManager->CreateNtupleDColumn(name);
+        }
+    }
+    analysisManager->FinishNtuple();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -80,12 +102,14 @@ void B1RunAction::BeginOfRunAction(const G4Run* run)
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     if (analysisManager->IsActive())
         analysisManager->OpenFile();
-    fRootMng->book();
+
     ////about clock
     // start = clock();
     // inform the runManager to save random number seed
     G4RunManager::GetRunManager()->SetRandomNumberStore(false);
     //// reset accumulables to their initial values
+
+    fRootMng->book();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -107,6 +131,13 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     G4cout
      << G4endl
      << "--------------------End of Local Run------------------------";
+  }
+
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  if (analysisManager->IsActive())
+  {
+      analysisManager->Write();
+      analysisManager->CloseFile();
   }
 
   fRootMng->saveTree();

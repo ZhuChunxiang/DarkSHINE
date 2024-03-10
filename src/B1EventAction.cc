@@ -29,6 +29,7 @@
 
 #include "B1EventAction.hh"
 #include "B1RunAction.hh"
+#include "B1DetectorConstruction.hh"
 #include "B1CalorimeterSD.hh"
 #include "B1CalorHit.hh"
 #include "B1ScintillatorSD.hh"
@@ -80,14 +81,29 @@ void B1EventAction::EndOfEventAction(const G4Event* evt)
     // Get hits collections IDs (only once)
     if (fScinHCID == -1)
     {
-        fScinHCID = G4SDManager::GetSDMpointer()->GetCollectionID("ScintillatorHitsCollection");
+        fScinHCID = G4SDManager::GetSDMpointer()->GetCollectionID("ScintillatorSD/ScintillatorHitsCollection");
     }
     
     // Get hits collections
-    auto scinHC = GetHitsCollection(fScinHCID, event);
+    auto scinHC = GetHitsCollection(fScinHCID, evt);
 
     // Get hit with total values
     auto scinHit_Total = (*scinHC)[scinHC->entries()-1];
+
+    // get analysis manager
+    auto analysisManager = G4AnalysisManager::Instance();
+
+    // fill ntuple
+    analysisManager->FillNtupleDColumn(0, 0, scinHit_Total->GetEdep());
+    analysisManager->AddNtupleRow(0);
+    for (G4int i = 0; i < fN_Layers; i++)
+    {
+        for (G4int j = 0; j < fN_Cells; j++)
+        {
+            analysisManager->FillNtupleDColumn(i+1, j, (*scinHC)[i*fN_Cells+j]->GetEdep());
+        }
+        analysisManager->AddNtupleRow(i+1);
+    }
     
     // accumulate statistics in run action
     G4int evtNb = evt->GetEventID();

@@ -80,6 +80,9 @@ class B1RunAction : public G4UserRunAction
     std::vector<double> SipmEtime;
     G4int SipmEid;
     G4int SipmPhotons;
+
+    G4int fnLayers = 100;
+    G4int fnCells = 100;
 };
 
 #endif

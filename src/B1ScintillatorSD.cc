@@ -69,19 +69,19 @@ G4bool B1ScintillatorSD::ProcessHits(G4Step* step, G4TouchableHistory*ROhist)
   // Energy_dep_layer_cell[iLayer][iCell] += edep;
   G4int hit_id = iLayer * FNofCells + iCell;
   auto hit_ = (*fHitsCollection)[hit_id]; // 解指针，判断放入哪个hit_id空间
-  if (!hit) {
+  if (!hit_) {
       G4ExceptionDescription msg;
-      msg << "Cannot access hit " << copyNo;
+      msg << "Cannot access hit " << hit_id;
       G4Exception("CalorimeterSD::ProcessHits()",
           "MyCode0004", FatalException, msg);
   }
   
   // Get hit for total accounting
-  auto hit_ = (*fHitsCollection)[fHitsCollection->entries()-1];
+  auto hit_total = (*fHitsCollection)[fHitsCollection->entries()-1];
   
   // Add values
-  hit->Add(edep, stepLength);
-  hitTotal->Add(edep, stepLength);
+  hit_->Add(edep, stepLength);
+  hit_total->Add(edep, stepLength);
 
   // ok, here we directly call rootmgr ro record the optical photon 
   // G4cout << " [SD] ==> Catch one photon \n" << G4endl;
@@ -160,7 +160,7 @@ void B1ScintillatorSD::EndOfEvent(G4HCofThisEvent*)
   // eEnergy=0;
   // eTime=0;
   // eID=0;
-    for(G4int i = 0; i < FNofLayers; i++)
+  /*  for (G4int i = 0; i < FNofLayers; i++)
     {
         for (G4int j = 0; j < FNofCells; j++)
         {
@@ -170,7 +170,7 @@ void B1ScintillatorSD::EndOfEvent(G4HCofThisEvent*)
     }
     fRootMgr->FillScinEdep(Energy_dep_per_cell);
     Energy_dep_per_cell.clear();
-    std::fill(Energy_dep_per_cell.begin(), Energy_dep_per_cell.end(), 0);
+    std::fill(Energy_dep_per_cell.begin(), Energy_dep_per_cell.end(), 0);*/
 }
 
 

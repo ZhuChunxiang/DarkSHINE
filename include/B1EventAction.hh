@@ -34,6 +34,7 @@
 #include "globals.hh"
 #include "RootManager.hh"
 #include "B1CalorimeterSD.hh"
+#include "B1ScintHit.hh"
 #include "B1ScintillatorSD.hh"
 #include <time.h>
 
