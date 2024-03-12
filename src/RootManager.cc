@@ -177,11 +177,11 @@ void RootManager::Fill()
 
 void RootManager::saveTree() 
 {
-     if (rootFile)
-     {
-         rootFile->cd();
-         rootFile->Write("", TObject::kOverwrite);
-         G4cout << " [Root Manager] ==> Simulation Tree is saved \n" << G4endl;
-     }
-     rootFile->Close();
+    if (rootFile)
+    {
+        rootFile->cd();
+        rootFile->Write("", TObject::kOverwrite);
+        G4cout << " [Root Manager] ==> Simulation Tree is saved \n" << G4endl;
+    }
+    rootFile->Close();
 }

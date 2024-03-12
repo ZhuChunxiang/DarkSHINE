@@ -44,12 +44,14 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1RunAction::B1RunAction(RootManager *rootMng)
+B1RunAction::B1RunAction(B1EventAction* eventAction, RootManager *rootMng)
 : G4UserRunAction(),
+  fEventAction(eventAction),
   fEdep(0.),
   fEdep2(0.)
 { 
     fRootMng = rootMng;
+    fRootMng->book();
     //// add new units for dose
    
     //const G4double milligray = 1.e-3*gray;
@@ -100,16 +102,15 @@ B1RunAction::~B1RunAction()
 void B1RunAction::BeginOfRunAction(const G4Run* run)
 { 
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    if (analysisManager->IsActive())
-        analysisManager->OpenFile();
+    G4String fileName = "energy_output.root";
+    //if (analysisManager->IsActive())
+        analysisManager->OpenFile(fileName);
 
     ////about clock
     // start = clock();
     // inform the runManager to save random number seed
     G4RunManager::GetRunManager()->SetRandomNumberStore(false);
     //// reset accumulables to their initial values
-
-    fRootMng->book();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -134,11 +135,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   }
 
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  if (analysisManager->IsActive())
-  {
+  //if (analysisManager->IsActive())
+  //{
       analysisManager->Write();
       analysisManager->CloseFile();
-  }
+  //}
 
   fRootMng->saveTree();
 

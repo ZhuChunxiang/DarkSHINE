@@ -38,6 +38,7 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 
+#include "g4root.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4SDManager.hh"
 #include "G4UnitsTable.hh"
@@ -120,10 +121,10 @@ void B1EventAction::EndOfEventAction(const G4Event* evt)
     {
         for (G4int j = 0; j < fN_Cells; j++)
         {
-            analysisManager->FillNtupleDColumn(i+1, j, (*scinHC)[i*fN_Cells+j]->GetEdep());
-        }
-        analysisManager->AddNtupleRow(i+1);
+            analysisManager->FillNtupleDColumn(1, i * fN_Cells + j, (*scinHC)[i*fN_Cells+j]->GetEdep());
+        }    
     }
+    analysisManager->AddNtupleRow(1);
     
     // accumulate statistics in run action
     G4int evtNb = evt->GetEventID();
