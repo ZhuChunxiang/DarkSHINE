@@ -44,9 +44,8 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1RunAction::B1RunAction(B1EventAction* eventAction, RootManager *rootMng)
+B1RunAction::B1RunAction(RootManager *rootMng)
 : G4UserRunAction(),
-  fEventAction(eventAction),
   fEdep(0.),
   fEdep2(0.)
 { 
@@ -78,6 +77,7 @@ B1RunAction::B1RunAction(B1EventAction* eventAction, RootManager *rootMng)
     // Creating ntuple
     analysisManager->CreateNtuple("HCAL_E_Total", "HCAL_E_Total");
     analysisManager->CreateNtupleDColumn("HCAL_E_Total_Scin");
+    // analysisManager->CreateNtupleDColumn("HCAL_E_Cell");
     analysisManager->FinishNtuple();
 
     analysisManager->CreateNtuple("HCAL_E_Cell", "HCAL_E_Cell");

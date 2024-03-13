@@ -86,6 +86,7 @@ class B1EventAction : public G4UserEventAction
     G4int SipmEid;
     std::vector<double> SipmEtime;
     G4double     fAbEdep;
+    std::vector<double> ScintEdep;
 
     B1ScintHitsCollection* GetHitsCollection(G4int hcID,
                                              const G4Event* event) const;

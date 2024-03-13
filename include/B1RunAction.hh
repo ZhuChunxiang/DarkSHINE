@@ -38,8 +38,6 @@
 
 class G4Run;
 
-class B1EventAction;
-
 /// Run action class
 ///
 /// In EndOfRunAction(), it calculates the dose in the selected volume 
@@ -49,7 +47,7 @@ class B1EventAction;
 class B1RunAction : public G4UserRunAction
 {
   public:
-    B1RunAction(B1EventAction* eventAction, RootManager * rootMng);
+    B1RunAction(RootManager * rootMng);
     virtual ~B1RunAction();
 
     // virtual G4Run* GenerateRun();
@@ -70,7 +68,6 @@ class B1RunAction : public G4UserRunAction
     G4double dur;
 
   private:
-    B1EventAction* fEventAction;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;
     G4int    fNoPhotons;

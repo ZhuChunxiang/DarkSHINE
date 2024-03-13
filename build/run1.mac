@@ -9,19 +9,19 @@
 # Initialize kernel
 /run/initialize
 #
-/control/verbose 2
-/run/verbose 2
+/control/verbose 0
+/run/verbose 0
 /event/verbose 0
-/tracking/verbose 1
+/tracking/verbose 0
 # 
 # gamma 6 MeV to the direction (0.,0.,1.)
 #
-/gps/particle e-
+/gps/particle mu-
 /gps/ene/mono 100 MeV
 /gps/pos/centre 0 0 -3
 /gps/direction 0 0 1
 #
-/run/beamOn 5
+/run/beamOn 1
 # 
 # proton 210 MeV to the direction (0.,0.,1.)
 #

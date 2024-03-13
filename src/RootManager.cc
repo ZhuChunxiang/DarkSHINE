@@ -99,7 +99,7 @@ void RootManager::book()
        // }
        //  tr->Branch("Each_Cell_Photon_num", &Cell_photon);
         tr->Branch("Each_Cell_Photon_num", &photon_);
-       //  tr->Branch("Each_Cell_Energy_dep", &Cell_energy_dep);
+        tr->Branch("Each_Cell_Energy_dep", &energy_dep_);
     }
 
 }
@@ -137,8 +137,8 @@ void RootManager::FillSim(double Energy, double WLSEnergy, int EventNb, int OPin
 
 void RootManager::FillScinEdep(std::vector<double>& cell_edep)
 {
-    /*energy_dep_ = cell_edep;
-    Num = energy_dep_.size();
+    energy_dep_ = cell_edep;
+    /*Num = energy_dep_.size();
     for (Int_t i = 0; i < Num; i++)
     {
         std::string name = "Cell_energy_dep_" + std::to_string(i);

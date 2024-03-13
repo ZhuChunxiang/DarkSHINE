@@ -122,9 +122,14 @@ void B1EventAction::EndOfEventAction(const G4Event* evt)
         for (G4int j = 0; j < fN_Cells; j++)
         {
             analysisManager->FillNtupleDColumn(1, i * fN_Cells + j, (*scinHC)[i*fN_Cells+j]->GetEdep());
+            ScintEdep.emplace_back((*scinHC)[i*fN_Cells+j]->GetEdep());
         }    
     }
     analysisManager->AddNtupleRow(1);
+
+    fRootMng->FillScinEdep(ScintEdep);
+    ScintEdep.clear();
+    std::fill(ScintEdep.begin(), ScintEdep.end(), 0);
     
     // accumulate statistics in run action
     G4int evtNb = evt->GetEventID();

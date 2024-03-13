@@ -60,7 +60,7 @@ void B1ActionInitialization::Build() const
 {
   SetUserAction(new B1PrimaryGeneratorAction(fRootMng));
 
-  B1RunAction* runAction = new B1RunAction(eventAction,fRootMng);
+  B1RunAction* runAction = new B1RunAction(fRootMng);
   SetUserAction(runAction);
   
   B1EventAction* eventAction = new B1EventAction(runAction,fRootMng);
